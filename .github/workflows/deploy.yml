@@ -1,0 +1,31 @@
+name: Build and Publish Docker Image
+
+on:
+  workflow_dispatch: 
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Install Podman
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y podman
+
+    - name: Build container image
+      run: podman build -t ghcr.io/${{ github.repository }}/my-image:latest -f Containerfile
+
+    - name: Log in to GitHub Container Registry
+      env:
+        CR_PAT: ${{ secrets.GITHUB_TOKEN }}
+      run: echo $CR_PAT | podman login ghcr.io --username ${{ github.actor }} --password-stdin
+
+    - name: Push image to GitHub Container Registry
+      run: podman push ghcr.io/${{ github.repository }}/my-image:latest

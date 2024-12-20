@@ -5,7 +5,6 @@
   "scripts": {
     "build": "tsc --build",
     "build.watch": "tsc --build --watch",
-    "format": "prettier --write .",
     "format:check": "prettier --check .",
     "lint": "eslint .",
     "start": "ts-node src/worker.ts",
